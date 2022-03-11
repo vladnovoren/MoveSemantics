@@ -57,6 +57,6 @@ int main() {
 Compare results:
 | copy | my_move |
 |:-----------------------------------------------------------------:|:------------------------------------------------------------:|
-| <img src="copy.png" alt="Picture 1" width="400"> | <img src="move.png" alt="Picture 2" width="400"> |
+| <img src="copy.png" alt="Picture 1" width="800"> | <img src="move.png" alt="Picture 2" width="800"> |
 | ***Picture 1***<br/>Temporary variable turns into lvalue          | ***Picture 2***<br/>The lvalue is forced to be rvalue        |
 
