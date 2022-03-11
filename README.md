@@ -108,7 +108,23 @@ int main() {
 }
 
 ```
+<pre>
 <img src="forward.png" alt="Picture 3" width="800">
-<em><b>Picture 3</b> Forwarding using my_forward (like std::forward)</em>
+<em><b>Picture 3</b><br>Forwarding using my_forward (like std::forward)</br></em>
+</pre>
 
-Here you can see that `a` passed as `lvalue`-reference and copy constructor has been called, but temporary object passed as `rvalue`-reference and move constructor has been called.
+Here you can see that `a` passed as `lvalue`-reference and copy constructor has been called, but temporary object passed as `rvalue`-reference, so move constructor has been called.
+
+## Power of two
+As you can see, `std::forward` is powerfull wrapper over `static_cast` that gives us prefect forwarding. The question is: why we should still use `std::move`? Firstly, sometimes we want to explicitly turn an `lvalue`-object to `rvalue` and "get rid of it". Secondly, `std::forward` requires type specifying which overfills the code.
+
+## Links
+- [lvalues and rvalues](https://habr.com/ru/post/322132/)
+
+- [perfect forwarding](https://habr.com/ru/post/242639/)
+
+- [cppreference: remove_reference](https://en.cppreference.com/w/cpp/types/remove_reference)
+
+- [cppreference: std::move](https://en.cppreference.com/w/cpp/utility/move)
+
+- [cppreference: std::forward](https://en.cppreference.com/w/cpp/utility/forward)
