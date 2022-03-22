@@ -12,7 +12,7 @@ struct Edge {
   size_t src_ = 0;
   size_t dst_ = 0;
 
-  bool dotted_ = false;
+  std::string shape_;
 };
 
 
@@ -24,7 +24,8 @@ class GVLogger: public ILogger {
   void LogDefaultCtor(const LogInt& elem) override;
   void LogValueCtor(const LogInt& elem) override;
   void LogCopyCtor(const LogInt& dst, const LogInt& src) override;
-  void LogMoveCtor(const LogInt& dst, const LogInt& src) override;
+  size_t LogMoveCtorPrefix(const LogInt& src) override;
+  void LogMoveCtorSuffix(const LogInt& dst, const LogInt& src, const size_t ctor_node) override;
   void LogDtor(const LogInt& elem) override;
 
   void LogAssOptor(const LogInt& dst, const LogInt& src) override;
@@ -37,16 +38,17 @@ class GVLogger: public ILogger {
   void LogFuncEntry(const std::string& func) override;
   void LogFuncEnd() override;
 
+  void LogElem(const LogInt& elem) override;
+
  protected:
   size_t FetchAddId();
 
   void LogNodesLink(const Edge& edge);
 
   size_t LogOptorNode(const std::string& name);
-  size_t LogCtorNode(const std::string& name);
+  size_t LogCtorNode(const std::string& name, const std::string& color);
 
   void LogShift() override;
-  void LogElem(const LogInt& elem) override;
   void LogElemValue(const LogInt& elem) override;
   void LogElemName(const LogInt& elem);
   void LogElemAddress(const LogInt& elem);

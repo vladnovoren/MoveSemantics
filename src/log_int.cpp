@@ -3,28 +3,33 @@
 size_t LogInt::last_num_ = 0;
 
 LogInt::LogInt(const std::string& name) {
+  FUNC_LOG;
   SetName(name);
   history_ += name_ + "(" + std::to_string(value_) + ")";
   ILogger::curr_logger_->LogDefaultCtor(*this);
 }
 
 LogInt::LogInt(const int value, const std::string& name): value_(value) {
+  FUNC_LOG;
   SetName(name);
   history_ += name_ + "(" + std::to_string(value) + ")";
   ILogger::curr_logger_->LogValueCtor(*this);
 }
 
 LogInt::LogInt(const LogInt& other, const std::string& name): value_(other.value_) {
+  FUNC_LOG;
   SetName(name);
   history_ += name_ + "(" + other.history_ + ")";
   ILogger::curr_logger_->LogCopyCtor(*this, other);
 }
 
-LogInt::LogInt(LogInt&& other, const std::string& name): value_(other.value_) {
+LogInt::LogInt(LogInt&& other, const std::string& name) {
+  FUNC_LOG;
+  size_t ctor_node_id = ILogger::curr_logger_->LogMoveCtorPrefix(other);
   SetName(name);
+  std::swap(value_, other.value_);
   history_ += name_ + "(" + other.history_ + ")";
-  other.value_ = 0;
-  ILogger::curr_logger_->LogMoveCtor(*this, other);
+  ILogger::curr_logger_->LogMoveCtorSuffix(*this, other, ctor_node_id);
 }
 
 LogInt::~LogInt() {
@@ -53,6 +58,7 @@ const char* LogInt::GetTypeStr() const {
 }
 
 LogInt& LogInt::operator=(const LogInt& other) {
+  FUNC_LOG;
   value_ = other.value_;
   history_ = other.history_;
   ILogger::curr_logger_->LogAssOptor(*this, other);
@@ -60,9 +66,9 @@ LogInt& LogInt::operator=(const LogInt& other) {
 }
 
 LogInt& LogInt::operator=(LogInt&& other) {
-  value_ = other.value_;
+  FUNC_LOG;
+  std::swap(value_, other.value_);
   history_ = other.history_;
-  other.value_ = 0;
   ILogger::curr_logger_->LogMoveAssOptor(*this, other);
   return *this;
 }

@@ -19,7 +19,8 @@ class ILogger {
   virtual void LogDefaultCtor(const LogInt& elem) = 0;
   virtual void LogValueCtor(const LogInt& elem) = 0;
   virtual void LogCopyCtor(const LogInt& dst, const LogInt& src) = 0;
-  virtual void LogMoveCtor(const LogInt& dst, const LogInt& src) = 0;
+  virtual size_t LogMoveCtorPrefix(const LogInt& src) = 0;
+  virtual void LogMoveCtorSuffix(const LogInt& dst, const LogInt& src, const size_t ctor_node) = 0;
   virtual void LogDtor(const LogInt& elem) = 0;
 
   virtual void LogAssOptor(const LogInt& dst, const LogInt& src) = 0;
@@ -32,9 +33,10 @@ class ILogger {
   virtual void LogFuncEntry(const std::string& func) = 0;
   virtual void LogFuncEnd() = 0;
 
+  virtual void LogElem(const LogInt& elem) = 0;
+
  protected:
   virtual void LogShift() = 0;
-  virtual void LogElem(const LogInt& elem) = 0;
   virtual void LogElemValue(const LogInt& elem) = 0;
 
   static size_t depth_;

@@ -5,38 +5,33 @@
 #include "html_logger.hpp"
 #include "move_semantics.hpp"
 
-void Func(const int*, size_t) {
+template<typename T, typename Arg>
+T* Alloc(Arg&& arg) {
   FUNC_LOG;
+  return new T(my_forward<Arg>(arg));
 }
 
-LogInt Fib(const size_t n) {
-  FUNC_LOG;
-  if (n <= 1) {
-    return 1;
-  } else {
-    return Fib(n - 1) + Fib(n - 2);
+class MeowedInt {
+ public:
+  void SetValue(LogInt value) {
+    FUNC_LOG;
+    value_ = my_move(value);
   }
-}
 
-template<typename T>
-void Imitator(T&& obj) {
-  FUNC_LOG;
-  volatile typename my_remove_reference<T>::type copy = my_forward<T>(obj);
-}
-
-template<typename T>
-void Wrapper(T&& obj) {
-  FUNC_LOG;
-  Imitator(my_forward<T>(obj));
-}
+ protected:
+  LOG_INT_DECL(value_);
+  /*
+    implementation is skipped
+  */
+};
 
 int main() {
   LogIniter::GetInstance(LogType::GV);
   FUNC_LOG;
 
   LOG_INT_INIT_BY_VALUE(a, 42);
-  Wrapper(a);
-  Wrapper(LogInt());
+  MeowedInt meowed_int;
+  meowed_int.SetValue(my_move(a));
 
   return 0;
 }

@@ -67,7 +67,8 @@ void HTMLLogger::LogCopyCtor(const LogInt& dst, const LogInt& src) {
   fprintf(log_file_, "\n");
 }
 
-void HTMLLogger::LogMoveCtor(const LogInt&, const LogInt&) {}
+size_t HTMLLogger::LogMoveCtorPrefix(const LogInt&) {return 0;}
+void HTMLLogger::LogMoveCtorSuffix(const LogInt&, const LogInt&, const size_t) {}
 
 void HTMLLogger::LogDtor(const LogInt&) {}
 

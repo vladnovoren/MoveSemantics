@@ -26,4 +26,11 @@ T&& my_forward(typename my_remove_reference<T>::type& obj) {
   return static_cast<T&&>(obj);
 }
 
+template<typename T>
+void my_swap(T& a, T& b) {
+  T c(my_move(a));
+  a = my_move(b);
+  b = my_move(c);
+}
+
 #endif /* move_semantics.hpp */

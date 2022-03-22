@@ -19,7 +19,8 @@ class HTMLLogger: public ITextLogger {
   void LogDefaultCtor(const LogInt& elem) override;
   void LogValueCtor(const LogInt& elem) override;
   void LogCopyCtor(const LogInt& dst, const LogInt& src) override;
-  void LogMoveCtor(const LogInt& dst, const LogInt& src) override;
+  size_t LogMoveCtorPrefix(const LogInt& src) override;
+  void LogMoveCtorSuffix(const LogInt& dst, const LogInt& src, const size_t ctor_node) override;
   void LogDtor(const LogInt& elem) override;
 
   void LogAssOptor(const LogInt& dst, const LogInt& src) override;

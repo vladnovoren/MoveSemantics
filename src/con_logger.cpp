@@ -50,7 +50,8 @@ void ConLogger::LogCopyCtor(const LogInt& dst, const LogInt& src) {
   printf("\n");
 }
 
-void ConLogger::LogMoveCtor(const LogInt&, const LogInt&) {}
+size_t ConLogger::LogMoveCtorPrefix(const LogInt&) {return 0;}
+void ConLogger::LogMoveCtorSuffix(const LogInt&, const LogInt&, const size_t) {}
 
 void ConLogger::LogDtor(const LogInt&) {}
 

@@ -3,6 +3,7 @@
 
 #include "ilogger.hpp"
 #include "func_logger.hpp"
+#include "move_semantics.hpp"
 #include <string>
 
 static const char* const EXP = "EXP";
@@ -64,9 +65,10 @@ class LogInt {
   bool is_imp_ = false;
 };
 
-#define LOG_INT_DECL(var) LogInt var(#var)
-#define LOG_INT_INIT_BY_VALUE(var, value) LogInt var(value, #var)
-#define LOG_INT_INIT_BY_COPY(var, other) LogInt var(other, #var)
+#define LOG_INT_DECL(var) LogInt var{#var}
+#define LOG_INT_INIT_BY_VALUE(var, value) LogInt var{value, #var}
+#define LOG_INT_INIT_BY_OTHER(var, other) LogInt var{other, #var}
+#define LOG_INT_ASS_BY_OTHER(var, other) var.operator={other, #var}
 
 
 #endif /* log_int.hpp */

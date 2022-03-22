@@ -15,7 +15,7 @@ void GVLogger::LogDefaultCtor(const LogInt& elem) {
   size_t elem_node_id = NewOccurrence(elem);
   LogElem(elem);
 
-  size_t ctor_node_id = LogCtorNode("DefaultCtor");
+  size_t ctor_node_id = LogCtorNode("DefaultCtor", "green");
   LogNodesLink({ctor_node_id, elem_node_id});
 }
 
@@ -23,7 +23,7 @@ void GVLogger::LogValueCtor(const LogInt& elem) {
   size_t elem_node_id = NewOccurrence(elem);
   LogElem(elem);
 
-  size_t ctor_node_id = LogCtorNode("ValueCtor");
+  size_t ctor_node_id = LogCtorNode("ValueCtor", "green");
   LogNodesLink({ctor_node_id, elem_node_id});
 }
 
@@ -32,21 +32,27 @@ void GVLogger::LogCopyCtor(const LogInt& dst, const LogInt& src) {
   LogElem(dst);
 
   size_t src_node_id = NewOccurrence(src);
-  size_t ctor_node_id = LogCtorNode("CopyCtor");
+  size_t ctor_node_id = LogCtorNode("CopyCtor", "red");
 
   LogNodesLink({src_node_id, ctor_node_id});
   LogNodesLink({ctor_node_id, dst_node_id});
 }
 
-void GVLogger::LogMoveCtor(const LogInt& dst, const LogInt& src) {
-  size_t dst_node_id = NewOccurrence(dst);
-  LogElem(dst);
-
+size_t GVLogger::LogMoveCtorPrefix(const LogInt& src) {
   size_t src_node_id = NewOccurrence(src);
-  size_t ctor_node_id = LogCtorNode("MoveCtor");
+  size_t ctor_node_id = LogCtorNode("MoveCtor", "green");
 
   LogNodesLink({src_node_id, ctor_node_id});
+
+  return ctor_node_id;
+}
+
+void GVLogger::LogMoveCtorSuffix(const LogInt& dst, const LogInt& src, const size_t ctor_node_id) {
+  size_t src_node_id = NewOccurrence(src);
+  size_t dst_node_id = NewOccurrence(dst);
+
   LogNodesLink({ctor_node_id, dst_node_id});
+  LogNodesLink({ctor_node_id, src_node_id});
 }
 
 void GVLogger::LogDtor(const LogInt& elem) {
@@ -151,9 +157,9 @@ void GVLogger::LogElem(const LogInt& elem) {
   fprintf(log_file_, "</table>>]\n");
 }
 
-size_t GVLogger::LogCtorNode(const std::string& name) {
+size_t GVLogger::LogCtorNode(const std::string& name, const std::string& color) {
   size_t ctor_node_id = FetchAddId();
-  fprintf(log_file_, "%zu [label = \"%s\" shape = \"diamond\"]\n", ctor_node_id, name.c_str());
+  fprintf(log_file_, "%zu [style = filled label = \"%s\" shape = \"diamond\" fillcolor = \"%s\"]\n", ctor_node_id, name.c_str(), color.c_str());
   return ctor_node_id;
 }
 
@@ -185,6 +191,7 @@ size_t GVLogger::NewOccurrence(const LogInt& elem) {
     LogElem(elem);
   } else {
     last_id = node_match_[elem.GetNum()] = FetchAddId();
+    LogElem(elem);
   }
   return last_id;
 }

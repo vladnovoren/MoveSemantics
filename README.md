@@ -81,7 +81,7 @@ T&& my_forward(typename my_remove_reference<T>::type& obj) {
   return static_cast<T&&>(obj);
 }
 ```
-It forwards `rvalue`-s as `rvalue`-s, prohibits forwarding of `rvalue`-s as `lvalue`-s and helps us to forward `lvalue`-s as `lvalue`-s.
+It forwards `rvalue` as `rvalue`, prohibits forwarding of `rvalue` as `lvalue` and helps us to forward `lvalue` as `lvalue`.
 Let's rewrite our wrapper using forwarding and check results of it:
 ```
 template<typename T>
@@ -115,7 +115,7 @@ int main() {
 
 Here you can see that `a` passed as `lvalue`-reference and copy constructor has been called, but temporary object passed as `rvalue`-reference, so move constructor has been called.
 
-## Power of two
+## Conclusion
 As you can see, `std::forward` is powerfull wrapper over `static_cast` that gives us prefect forwarding. The question is: why we should still use `std::move`? Firstly, sometimes we want to explicitly turn an `lvalue`-object to `rvalue` and "get rid of it". Secondly, `std::forward` requires type specifying which overfills the code.
 
 ## Links
@@ -128,3 +128,17 @@ As you can see, `std::forward` is powerfull wrapper over `static_cast` that give
 - [cppreference: std::move](https://en.cppreference.com/w/cpp/utility/move)
 
 - [cppreference: std::forward](https://en.cppreference.com/w/cpp/utility/forward)
+
+init copy
+```
+int main() {
+  LogIniter::GetInstance(LogType::GV);
+  FUNC_LOG;
+
+  LOG_INT_DECL(a);
+  LOG_INT_INIT_BY_COPY(b, a);
+
+  return 0;
+}
+```
+init move
