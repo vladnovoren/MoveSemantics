@@ -46,7 +46,7 @@ class GVLogger: public ILogger {
 
   void LogNodesLink(const Edge& edge);
 
-  size_t LogOptorNode(const std::string& name);
+  size_t LogOptorNode(const std::string& name, const std::string& color);
   size_t LogCtorNode(const std::string& name, const std::string& color);
 
   void LogShift() override;
