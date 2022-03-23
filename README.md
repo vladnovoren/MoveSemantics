@@ -186,7 +186,7 @@ In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rv
 
 |Value                           |
 |--------------------------------|
-|![](forward_value.png)|
+|![](forward_value.png)          |
 
 |Move                 |
 |---------------------|
