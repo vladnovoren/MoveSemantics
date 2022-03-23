@@ -183,10 +183,16 @@ T* Allocate(Arg&& arg) {
 In case 1 argmunet always copies and sometimes it causes unnecessary copying. In case 2 argument always moves and it can be invalidated.
 
 In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rvalue`:
+<pre>
+<img src="forward_value.png" alt="Forward value" width="800">
+</pre>
+<pre>
+<img src="forward_move.png" alt="Forward move" width="800">
+</pre>
+<pre>
+<img src="forward_forward.png" alt="Forward forward" width="800">
+</pre>
 
-| Value                   | With move              | With forward              |
-| ----------------------- | ---------------------- | ------------------------- |
-| <pre><img src="forward_value.png" alt="forward value" width="400"></pre>  | ![](forward_move.png)  | ![](forward_forward.png)  |
 
 Let's consider its possible realisation.
 
