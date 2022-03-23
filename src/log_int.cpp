@@ -67,9 +67,10 @@ LogInt& LogInt::operator=(const LogInt& other) {
 
 LogInt& LogInt::operator=(LogInt&& other) {
   FUNC_LOG;
+  size_t optor_node_id = ILogger::curr_logger_->LogMoveAssOptorPrefix(other);
   std::swap(value_, other.value_);
   history_ = other.history_;
-  ILogger::curr_logger_->LogMoveAssOptor(*this, other);
+  ILogger::curr_logger_->LogMoveAssOptorSuffix(*this, other, optor_node_id);
   return *this;
 }
 

@@ -23,12 +23,10 @@ add_link_options(
 
 project(MoveSemantics)
 
-set(UTILITY_SOURCE src/con_logger.cpp
-                   src/func_logger.cpp
+set(UTILITY_SOURCE src/func_logger.cpp
                    src/ilogger.cpp
                    src/log_int.cpp
                    src/log_initer.cpp
-                   src/html_logger.cpp
                    src/gv_logger.cpp
                    src/move_semantics.cpp)
 

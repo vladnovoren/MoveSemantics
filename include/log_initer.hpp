@@ -2,19 +2,17 @@
 #define LOG_INITER_HPP
 
 #include "ilogger.hpp"
-#include "con_logger.hpp"
-#include "html_logger.hpp"
 #include "gv_logger.hpp"
 
 enum class LogType {
-  CONSOLE,
-  HTML,
+  // CONSOLE,
+  // HTML,
   GV
 };
 
 class LogIniter {
  public:
-  static LogIniter& GetInstance(const LogType log_type = LogType::CONSOLE);
+  static LogIniter& GetInstance(const LogType log_type = LogType::GV);
 
  protected:
   LogIniter(const LogType log_type);

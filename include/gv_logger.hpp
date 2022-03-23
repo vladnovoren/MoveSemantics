@@ -29,7 +29,8 @@ class GVLogger: public ILogger {
   void LogDtor(const LogInt& elem) override;
 
   void LogAssOptor(const LogInt& dst, const LogInt& src) override;
-  void LogMoveAssOptor(const LogInt& dst, const LogInt& src) override;
+  size_t LogMoveAssOptorPrefix(const LogInt& src) override;
+  void LogMoveAssOptorSuffix(const LogInt& dst, const LogInt& src, const size_t optor_node_id) override;
 
   void LogUnaryOptor(const LogInt& elem, const LogInt& parent, const std::string& op) override;
   void LogBinaryOptor(const LogInt& elem, const LogInt& parent1, const LogInt& parent2, const std::string& op) override;

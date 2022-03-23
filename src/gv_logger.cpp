@@ -70,15 +70,22 @@ void GVLogger::LogAssOptor(const LogInt& dst, const LogInt& src) {
   LogNodesLink({optor_node_id, dst_node_id});
 }
 
-void GVLogger::LogMoveAssOptor(const LogInt& dst, const LogInt& src) {
+size_t GVLogger::LogMoveAssOptorPrefix(const LogInt& src) {
+  size_t src_node_id = NewOccurrence(src);
+  size_t ctor_node_id = LogCtorNode("MoveAssOptor", "green");
+
+  LogNodesLink({src_node_id, ctor_node_id});
+
+  return ctor_node_id;
+}
+
+void GVLogger::LogMoveAssOptorSuffix(const LogInt& dst, const LogInt& src, const size_t optor_node_id) {
   size_t src_node_id = NewOccurrence(src);
   size_t dst_node_id = NewOccurrence(dst);
   LogElem(dst);
 
-  size_t optor_node_id = LogOptorNode("MoveAssOptor");
-
-  LogNodesLink({src_node_id, optor_node_id});
   LogNodesLink({optor_node_id, dst_node_id});
+  LogNodesLink({optor_node_id, src_node_id, "tapered"});
 }
 
 void GVLogger::LogUnaryOptor(const LogInt& elem, const LogInt& parent, const std::string& op) {

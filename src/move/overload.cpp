@@ -1,5 +1,7 @@
 #include "log_initer.hpp"
 #include "log_int.hpp"
+#include <type_traits>
+#include <iostream>
 
 class Cat {
  public:
@@ -17,8 +19,7 @@ class Cat {
   // calls when 'happiness' is rvalue
   void SetHappiness(LogInt&& happiness) {
     FUNC_LOG;
-    happiness_ = happiness; // moving assignment
-    
+    happiness_ = static_cast<LogInt&&>(happiness); // moving assignment
   }
 
  private:

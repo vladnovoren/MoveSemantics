@@ -1,7 +1,6 @@
 # std::move vs std::forward: differences and reasons for using both
 
 ## std::move
-### Introduction
 Let's write setter for some class.
 ```c++
  class Cat {
@@ -18,7 +17,7 @@ Let's write setter for some class.
 
   // calls when 'happiness' is rvalue
   void SetHappiness(LogInt&& happiness) {
-    happiness_ = happiness; // moving assignment
+    happiness_ = static_cast<LogInt&&>(happiness); // moving assignment
   }
 
  private:
@@ -39,9 +38,11 @@ int main() {
   return 0;
 }
 ```
+`static_cast<LogInt&&>` transforms local object `happiness` to `rvalue`.
+
 `Cat::SetHappiness` is overloaded for two cases:
 * `happiness` is `lvalue`. `Cat::SetHappiness(const LogInt&)` is called. Passed value **copied**.
-* `happiness` is `rvalue`. `Cat::SetHappiness(LogInt&&)` is called. Passed value **moved**.
+* `happiness` is `rvalue`. `Cat::SetHappiness(LogInt&&)` is called. Passed value **moved**. `static_cast` is used because `happiness` is `lvalue` inside setter.
 
 You can see results:
 <pre>
@@ -82,8 +83,6 @@ int main() {
   return 0;
 }
 ```
-`static_cast<LogInt&&>` transforms local object `happiness` to `rvalue`.
-
 There're two cases:
 * We passed `lvalue` to `Cat::SetHappiness`. It copied to local variable `happiness`, then `happiness` moved to `Cat::happiness_`.
 * We passed `rvalue` to `Cat::SetHappiness`. It moved to local variable `happiness`, then `happiness` moved to `Cat::happiness_`.
@@ -157,11 +156,7 @@ void SetHappiness(LogInt happiness) {
   happiness_ = my_move(happiness); // moving assignment
 }
 ```
-
-
-
-## Old
-Let's write a wrapper function that forwards our objects to some container. At first, we can write something like that:
+## std::forward
 
 ```
 template<typename T>
