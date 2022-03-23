@@ -184,9 +184,9 @@ In case 1 argmunet always copies and sometimes it causes unnecessary copying. In
 
 In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rvalue`:
 
-|Value|Move|
-|-------------------------------|------------------------------|
-|![Value](img/forward_value.png)|![Value](img/forward_move.png)|
+|Value|Move|Forward|
+|-------------------------------|-----------------------------|-----------------------------------|
+|![Value](img/forward_value.png)|![Move](img/forward_move.png)|![Forward](img/forward_forward.png)|
 
 
 ```
