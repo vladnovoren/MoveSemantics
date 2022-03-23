@@ -157,84 +157,38 @@ void SetHappiness(LogInt happiness) {
 }
 ```
 ## std::forward
-
-```
-template<typename T>
-void Imitator(const T& obj) {
+Sometimes we want to pass `lvalue` as `lvalue` and `rvalue` as `rvalue`.
+```c++
+// case 1
+template<typename T, typename Arg>
+T* Allocate(Arg&& arg) {
   FUNC_LOG;
-  volatile T copy = obj; // imitates of passing obj to some container
+  return new T(arg);
 }
 
-template<typename T>
-void Wrapper(const T& obj) {
+// case 2
+template<typename T, typename Arg>
+T* Allocate(Arg&& arg) {
   FUNC_LOG;
-  Imitator(obj);
+  return new T(my_move(arg));
 }
 
-int main() {
-  LogIniter::GetInstance(LogType::GV);
+// case 3
+template<typename T, typename Arg>
+T* Allocate(Arg&& arg) {
   FUNC_LOG;
-
-  LOG_INT_INIT_BY_VALUE(a, 42);
-  Wrapper(a);
-
-  return 0;
+  return new T(std::forward<Arg>(arg));
 }
 ```
-But here we use copy constructor of `T` in `Imitator` function. Let's use move semantics to avoid unnecessary copying:
+In case 1 argmunet always copies and sometimes it causes unnecessary copying. In case 2 argument always moves and it can be invalidated.
 
-```
-template<typename T>
-void Imitator(T&& obj) {
-  FUNC_LOG;
-  volatile typename my_remove_reference<T>::type copy = my_move(obj);
-}
+In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rvalue`:
 
-template<typename T>
-void Wrapper(T&& obj) {
-  FUNC_LOG;
-  Imitator(obj);
-}
+|Value                    |With move               |With forward               |
+|-------------------------|------------------------|---------------------------|
+|![](forward_value.png)   |![](forward_move.png)   |![](forward_forward.png)   |
+Let's consider its possible realisation.
 
-int main() {
-  LogIniter::GetInstance(LogType::GV);
-  FUNC_LOG;
-
-  LOG_INT_INIT_BY_VALUE(a, 42);
-  Wrapper(my_move(a));
-
-  return 0;
-}
-```
-## First problems
-Let's compare results:
-| copy | my_move |
-|:-----------------------------------------------------------------:|:------------------------------------------------------------:|
-| <img src="copy.png" alt="Picture 1" width="800"> | <img src="move.png" alt="Picture 2" width="800"> |
-| ***Picture 1***<br/>Temporary variable turns into lvalue          | ***Picture 2***<br/>The lvalue is forced to be rvalue        |
-
-As you can notice, in second case value of `a` variable was reset to default (`0`). It happens in move constructor:
-```
-LogInt::LogInt(LogInt&& other, const std::string& name): value_(other.value_) {
-  SetName(name);
-  history_ += name_ + "(" + other.history_ + ")";
-  other.value_ = 0;
-  ILogger::curr_logger_->LogMoveCtor(*this, other);
-}
-```
-This implementation of move constructor realises common important rule: reset moved object to default or invalid state. But what if we want to keep our object?
-
-## Perfect solution
-Instead of writing a lot of extra function overloads let's forward objects wisely and use `my_forward` (my implementation of `std::forward`). You can see source code of this function and a couple of calls:
-
-```
-template<typename T>
-T&& my_forward(typename my_remove_reference<T>::type& obj) {
-  return static_cast<T&&>(obj);
-}
-```
-It forwards `rvalue` as `rvalue`, prohibits forwarding of `rvalue` as `lvalue` and helps us to forward `lvalue` as `lvalue`.
-Let's rewrite our wrapper using forwarding and check results of it:
 ```
 template<typename T>
 void Imitator(T&& obj) {
@@ -260,10 +214,7 @@ int main() {
 }
 
 ```
-<pre>
-<img src="forward.png" alt="Picture 3" width="800">
-<em><b>Picture 3</b><br>Forwarding using my_forward (like std::forward)</br></em>
-</pre>
+
 
 Here you can see that `a` passed as `lvalue`-reference and copy constructor has been called, but temporary object passed as `rvalue`-reference, so move constructor has been called.
 

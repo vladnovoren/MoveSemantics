@@ -44,4 +44,14 @@ target_link_libraries(move_template PUBLIC utility)
 add_executable(move_check src/move/check.cpp)
 target_link_libraries(move_check PUBLIC utility)
 
+
+add_executable(forward_forward src/forward/allocate_forward.cpp)
+target_link_libraries(forward_forward PUBLIC utility)
+
+add_executable(forward_move src/forward/allocate_move.cpp)
+target_link_libraries(forward_move PUBLIC utility)
+
+add_executable(forward_value src/forward/allocate_value.cpp)
+target_link_libraries(forward_value PUBLIC utility)
+
 target_include_directories(utility PUBLIC include include/move)
