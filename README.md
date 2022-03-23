@@ -184,7 +184,11 @@ In case 1 argmunet always copies and sometimes it causes unnecessary copying. In
 
 In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rvalue`:
 
-![Описание](img/forward_value.png "Value")
+<image
+  src="/img/forward_value.png"
+  alt="Текст с описанием картинки"
+  caption="Подпись под картинкой">
+
 
 
 ```
