@@ -179,6 +179,18 @@ T* Allocate(Arg&& arg) {
   FUNC_LOG;
   return new T(std::forward<Arg>(arg));
 }
+
+int main() {
+  LogIniter::GetInstance(LogType::GV);
+  FUNC_LOG;
+
+  LOG_INT_INIT_BY_VALUE(a, 42);
+
+  LogInt* p1 = Allocate<LogInt>(a);
+  delete p1;
+
+  return 0;
+}
 ```
 In case 1 argmunet always copies and sometimes it causes unnecessary copying. In case 2 argument always moves and it can be invalidated.
 
@@ -187,34 +199,26 @@ In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rv
 |Value|Move|Forward|
 |-------------------------------|-----------------------------|-----------------------------------|
 |![Value](img/forward_value.png)|![Move](img/forward_move.png)|![Forward](img/forward_forward.png)|
-
-
-```
-template<typename T>
-void Imitator(T&& obj) {
-  FUNC_LOG;
-  volatile typename my_remove_reference<T>::type copy = my_forward<T>(obj);
-}
-
-template<typename T>
-void Wrapper(T&& obj) {
-  FUNC_LOG;
-  Imitator(my_forward<T>(obj));
-}
+Realisation with `std::forward` copied object when we passed it as `lvalue`. Let's pass `rvalue`:
+```c++
+#include "forward/allocate_forward.hpp"
+#include "log_initer.hpp"
+#include "log_int.hpp"
 
 int main() {
   LogIniter::GetInstance(LogType::GV);
   FUNC_LOG;
 
-  LOG_INT_INIT_BY_VALUE(a, 42);
-  Wrapper(a);
-  Wrapper(LogInt());
+  LogInt* p1 = Allocate<LogInt>(LogInt(42));
+  delete p1;
 
   return 0;
 }
-
 ```
-
+Let's see results:
+|Passing rvalue using forward inside|
+|-----------------------------------|
+|![Value](img/forward_rvalue.png)   |
 
 Here you can see that `a` passed as `lvalue`-reference and copy constructor has been called, but temporary object passed as `rvalue`-reference, so move constructor has been called.
 
