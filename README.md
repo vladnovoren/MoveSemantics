@@ -49,7 +49,7 @@ You can see results:
 </pre>
 
 There's a way to avoid overloading. Let's forward `happiness` by value and move it to `Cat::happiness_`:
-```
+```c++
 #include "log_initer.hpp"
 #include "log_int.hpp"
 
