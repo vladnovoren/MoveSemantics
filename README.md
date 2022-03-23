@@ -186,7 +186,7 @@ In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rv
 
 | Value                   | With move              | With forward              |
 | ----------------------- | ---------------------- | ------------------------- |
-| ![](forward_value.png)  | ![](forward_move.png)  | ![](forward_forward.png)  |
+| <pre><img src="move_check.png" alt="Picture 3" width="400"></pre>  | ![](forward_move.png)  | ![](forward_forward.png)  |
 
 Let's consider its possible realisation.
 
