@@ -1,9 +1,98 @@
 # std::move vs std::forward: differences and reasons for using both
 
-## Introduction
-Since C++11, we can use move semantics to avoid unnecessary copying. One of such cases is forwarding objects to containers. Somtimes copying an object on forwarding is too expensive. If our object is temporary or no longer required, we can pass it as `rvalue`. But what if we want to keep it and pass as `lvalue`?
+## std::move
+### Introduction
+Let's write setter for some class.
+```c++
+ class Cat {
+ public:
+  void Meow() {
+    // not implemented
+    // depends on happiness
+  }
 
-## First steps
+  // calls when 'happiness' is lvalue
+  void SetHappiness(const LogInt& happiness) {
+    happiness_ = happiness; // copying assignment
+  }
+
+  // calls when 'happiness' is rvalue
+  void SetHappiness(LogInt&& happiness) {
+    happiness_ = happiness; // moving assignment
+  }
+
+ private:
+  LOG_INT_DECL(happiness_);
+
+};
+
+int main() {
+  LogIniter::GetInstance(LogType::GV);
+  FUNC_LOG;
+
+  LOG_INT_INIT_BY_VALUE(a, 42);
+
+  Cat cat;
+  cat.SetHappiness(a);
+  cat.SetHappiness(LogInt());
+
+  return 0;
+}
+```
+`Cat::SetHappiness` is overloaded for two cases:
+* `happiness` is `lvalue`. `Cat::SetHappiness(const LogInt&)` is called. Passed value **copied**.
+* `happiness` is `rvalue`. `Cat::SetHappiness(LogInt&&)` is called. Passed value **moved**.
+
+You can see results:
+<pre>
+<img src="move_overload.png" alt="Picture 3" width="800">
+</pre>
+
+There's a way to avoid overloading. Let's forward `happiness` by value and move it to `Cat::happiness_`:
+```
+#include "log_initer.hpp"
+#include "log_int.hpp"
+
+class Cat {
+ public:
+  void Meow() {
+    // not implemented
+    // depends on happiness
+  }
+
+  // calls when 'happiness' is lvalue
+  void SetHappiness(LogInt happiness) {
+    happiness_ = static_cast<LogInt&&>(happiness); // moving assignment
+  }
+
+ private:
+  LOG_INT_DECL(happiness_);
+
+};
+
+int main() {
+  LogIniter::GetInstance(LogType::GV);
+  FUNC_LOG;
+
+  LOG_INT_INIT_BY_VALUE(a, 42);
+
+  Cat cat;
+  cat.SetHappiness(a);
+  cat.SetHappiness(LogInt());
+
+  return 0;
+}
+```
+There're two cases of cases:
+* We passed `lvalue` to `Cat::SetHappiness`. It copied to local variable `happiness`, then `happiness` moved to `Cat::happiness_`.
+* We passed `rvalue` to `Cat::SetHappiness`. It moved to local variable `happiness`, then `happiness` moved to `Cat::happiness_`.
+
+You can see results:
+<pre>
+<img src="move_universal.png" alt="Picture 3" width="800">
+</pre>
+
+## че я высрал
 Let's write a wrapper function that forwards our objects to some container. At first, we can write something like that:
 
 ```

@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16.3)
 
+set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_CXX_STANDARD 20)
 
@@ -22,7 +23,7 @@ add_link_options(
 
 project(MoveSemantics)
 
-set(MOVE_SEMANTICS_SOURCE src/con_logger.cpp
+set(UTILITY_SOURCE src/con_logger.cpp
                    src/func_logger.cpp
                    src/ilogger.cpp
                    src/log_int.cpp
@@ -31,5 +32,12 @@ set(MOVE_SEMANTICS_SOURCE src/con_logger.cpp
                    src/gv_logger.cpp
                    src/move_semantics.cpp)
 
-add_executable(MoveSemantics ${MOVE_SEMANTICS_SOURCE} src/main.cpp)
-target_include_directories(MoveSemantics PUBLIC include/)
+add_library(utility STATIC ${UTILITY_SOURCE})
+
+add_executable(move_overload src/move/overload.cpp)
+target_link_libraries(move_overload PUBLIC utility)
+
+add_executable(move_universal src/move/universal.cpp)
+target_link_libraries(move_universal PUBLIC utility)
+
+target_include_directories(utility PUBLIC include include/move)

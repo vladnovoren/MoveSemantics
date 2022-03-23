@@ -52,7 +52,7 @@ void GVLogger::LogMoveCtorSuffix(const LogInt& dst, const LogInt& src, const siz
   size_t dst_node_id = NewOccurrence(dst);
 
   LogNodesLink({ctor_node_id, dst_node_id});
-  LogNodesLink({ctor_node_id, src_node_id});
+  LogNodesLink({ctor_node_id, src_node_id, "tapered"});
 }
 
 void GVLogger::LogDtor(const LogInt& elem) {
@@ -128,7 +128,7 @@ void GVLogger::LogFuncEnd() {
 
 void GVLogger::LogEdges() {
   for (auto& edge: edges_) {
-    fprintf(log_file_, "%zu -> %zu%s\n", edge.src_, edge.dst_, edge.dotted_ ? " [style=\"dotted\"]" : "");
+    fprintf(log_file_, "%zu -> %zu [style = \"%s\"]\n", edge.src_, edge.dst_, edge.style_.c_str());
   }
 }
 
@@ -187,7 +187,7 @@ size_t GVLogger::NewOccurrence(const LogInt& elem) {
     size_t prev_id = node_match_[elem.GetNum()];
     size_t curr_id = node_match_[elem.GetNum()] = FetchAddId();
     last_id = curr_id;
-    LogNodesLink({prev_id, curr_id, true});
+    LogNodesLink({prev_id, curr_id, "dotted"});
     LogElem(elem);
   } else {
     last_id = node_match_[elem.GetNum()] = FetchAddId();

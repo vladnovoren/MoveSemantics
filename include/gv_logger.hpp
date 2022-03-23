@@ -12,7 +12,7 @@ struct Edge {
   size_t src_ = 0;
   size_t dst_ = 0;
 
-  std::string shape_;
+  std::string style_ = "solid";
 };
 
 
