@@ -10,12 +10,15 @@ class Cat {
 
   // calls when 'happiness' is lvalue
   void SetHappiness(const LogInt& happiness) {
+    FUNC_LOG;
     happiness_ = happiness; // copying assignment
   }
 
   // calls when 'happiness' is rvalue
   void SetHappiness(LogInt&& happiness) {
+    FUNC_LOG;
     happiness_ = happiness; // moving assignment
+    
   }
 
  private:
@@ -31,7 +34,7 @@ int main() {
 
   Cat cat;
   cat.SetHappiness(a);
-  cat.SetHappiness(LogInt());
+  cat.SetHappiness(LogInt(42));
 
   return 0;
 }
