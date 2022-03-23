@@ -1,5 +1,6 @@
 #include "log_initer.hpp"
 #include "log_int.hpp"
+#include "move_semantics.hpp"
 
 class Cat {
  public:
@@ -8,9 +9,8 @@ class Cat {
     // depends on happiness
   }
 
-  // calls when 'happiness' is lvalue
   void SetHappiness(LogInt happiness) {
-    happiness_ = static_cast<LogInt&&>(happiness); // moving assignment
+    happiness_ = my_move(happiness); // moving assignment
   }
 
  private:

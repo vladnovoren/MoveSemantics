@@ -40,4 +40,10 @@ target_link_libraries(move_overload PUBLIC utility)
 add_executable(move_universal src/move/universal.cpp)
 target_link_libraries(move_universal PUBLIC utility)
 
+add_executable(move_template src/move/template.cpp)
+target_link_libraries(move_template PUBLIC utility)
+
+add_executable(move_check src/move/check.cpp)
+target_link_libraries(move_check PUBLIC utility)
+
 target_include_directories(utility PUBLIC include include/move)

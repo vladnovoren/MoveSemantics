@@ -60,7 +60,6 @@ class Cat {
     // depends on happiness
   }
 
-  // calls when 'happiness' is lvalue
   void SetHappiness(LogInt happiness) {
     happiness_ = static_cast<LogInt&&>(happiness); // moving assignment
   }
@@ -83,7 +82,9 @@ int main() {
   return 0;
 }
 ```
-There're two cases of cases:
+`static_cast<LogInt&&>` transforms local object `happiness` to `rvalue`.
+
+There're two cases:
 * We passed `lvalue` to `Cat::SetHappiness`. It copied to local variable `happiness`, then `happiness` moved to `Cat::happiness_`.
 * We passed `rvalue` to `Cat::SetHappiness`. It moved to local variable `happiness`, then `happiness` moved to `Cat::happiness_`.
 
@@ -91,8 +92,75 @@ You can see results:
 <pre>
 <img src="move_universal.png" alt="Picture 3" width="800">
 </pre>
+Here you can see our need to forcibly make `rvalue` object from `lvalue` in some cases. С++ standart library offers us `std::move` for it. It's convenient `static_cast` wrapper automatically deduce type and cast everything to `rvalue`. Let's see my own realisation of it:
 
-## че я высрал
+```
+template<typename T>
+typename my_remove_reference<T>::type&& my_move(T&& obj) {
+  return static_cast<typename my_remove_reference<T>::type&&>(obj);
+}
+```
+There're two cases:
+* If argement type is `T&&`, it deduces `T`.
+* If argument type is `T` or `T&`, it deduces `T&`. Refference collapcing rule transforms all `T&&` occurences into `T&`. `my_remove_refference` deal with it, offering us clear type `T` without any refferences.
+
+`my_remove_refference` is realised as template structure with no fields and partial template specialization:
+```c++
+template<typename T>
+struct my_remove_reference {
+  using type = T;
+};
+
+template<typename T>
+struct my_remove_reference<T&> {
+  using type = T;
+};
+
+template<typename T>
+struct my_remove_reference<T&&> {
+  using type = T;
+};
+```
+Let's call `my_move` with `LogInt`, `LogInt&` and `LogInt&&` and check its work:
+```c++
+#include "move_semantics.hpp"
+#include "log_initer.hpp"
+#include "log_int.hpp"
+
+int main() {
+  LogIniter::GetInstance(LogType::GV);
+  FUNC_LOG;
+
+  LOG_INT_INIT_BY_VALUE(clear, 42);
+
+  LOG_INT_INIT_BY_VALUE(for_lvref, 42);
+  LogInt& lvalue_ref = for_lvref;
+
+  LOG_INT_INIT_BY_VALUE(for_rvref, 42);
+  LogInt&& rvalue_ref = static_cast<LogInt&&>(for_rvref);
+
+  LOG_INT_INIT_BY_OTHER(clear_result, my_move(clear));
+  LOG_INT_INIT_BY_OTHER(lvalue_result, my_move(lvalue_ref));
+  LOG_INT_INIT_BY_OTHER(rvalue_result, my_move(rvalue_ref));
+
+  return 0;
+}
+```
+You can see that everything has moved:
+<pre>
+<img src="move_check.png" alt="Picture 3" width="800">
+</pre>
+
+It's time to rewrite our setter:
+```c++
+void SetHappiness(LogInt happiness) {
+  happiness_ = my_move(happiness); // moving assignment
+}
+```
+
+
+
+## Old
 Let's write a wrapper function that forwards our objects to some container. At first, we can write something like that:
 
 ```
