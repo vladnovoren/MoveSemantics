@@ -184,19 +184,17 @@ In case 1 argmunet always copies and sometimes it causes unnecessary copying. In
 
 In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rvalue`:
 
-|Value                           |
-|--------------------------------|
-|![](forward_value.png)          |
+<pre>
+<img src="forward_value.png" alt="Value" width="800">
+</pre>
 
-|Move                 |
-|---------------------|
-|![](forward_move.png)|
+<pre>
+<img src="forward_move.png" alt="Move" width="800">
+</pre>
 
-|Forward                 |
-|------------------------|
-|![](forward_forward.png)|
-
-Let's consider its possible realisation.
+<pre>
+<img src="forward_forward.png" alt="Forward" width="800">
+</pre>
 
 ```
 template<typename T>
