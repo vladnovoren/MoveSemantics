@@ -147,7 +147,7 @@ int main() {
 ```
 You can see that everything has moved:
 <pre>
-<img src="move_check.png" alt="Picture 3" width="800">
+<img src="move_check.png" alt="Move check" width="800">
 </pre>
 
 It's time to rewrite our setter:
