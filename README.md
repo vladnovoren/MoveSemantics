@@ -185,7 +185,7 @@ In case 1 argmunet always copies and sometimes it causes unnecessary copying. In
 In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rvalue`:
 
 <pre>
-<img src="forward_value.png" alt="Value">
+<img src="forward_value.png" alt="Value" width="400">
 </pre>
 
 <pre>
