@@ -246,10 +246,22 @@ T&& my_forward(typename my_remove_reference<T>::type&& obj) {
 ## Comparing
 Let's group result of using `std::move` and `std::forward` in table:
 <pre>
-<table>
-<tr><td>input expression category</td><td>expression type</td><td>std::move(expr) category</td><td>std::forward&ltArgT&gt(expr) type</td></tr>
+<table border = "1">
+<tr><td>input expr category</td><td>expr type</td><td>std::forward&ltArgT&gt(expr) category</td><td>std::forward&ltArgT&gt(expr) type</td><td>std::move(expr) category</td><td>std::move(expr) type</td></tr>
+<tr><td rowspan = "3">lvalue</td><td>ArgT</td><td rowspan = "3">lvalue</td><td rowspan="3">ArgT&</td><td rowspan = "4">rvalue</td><td rowspan = "4">ArgT&&</td></tr>
+<tr><td>ArgT&</td></tr>
+<tr><td>ArgT&&</td></tr>
+<tr><td>rvalue</td><td>ArgT&&</td><td>rvalue</td><td>ArgT&&</td></tr>
 </table>
 </pre>
+
+## Conclusion
+`std::move`:
+1. Makes everything `rvalue`.
+2. Uses when object is close to die. Helps to tell compiler to treat object as temporary to avoid unnecessary copying, e.g. in setters.
+`std::forward`:
+1. Saves the category of the expression.
+2. Uses to forward objects through wrappers, e.g. `emplace_back`.
 
 ## Links
 - [lvalues and rvalues](https://habr.com/ru/post/322132/)
