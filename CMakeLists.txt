@@ -51,6 +51,9 @@ target_link_libraries(forward_forward PUBLIC utility)
 add_executable(forward_move src/forward/allocate_move.cpp)
 target_link_libraries(forward_move PUBLIC utility)
 
+add_executable(forward_rvalue src/forward/allocate_rvalue.cpp)
+target_link_libraries(forward_rvalue PUBLIC utility)
+
 add_executable(forward_value src/forward/allocate_value.cpp)
 target_link_libraries(forward_value PUBLIC utility)
 

@@ -3,7 +3,6 @@
 
 #include "ilogger.hpp"
 #include "func_logger.hpp"
-#include "move_semantics.hpp"
 #include <string>
 
 static const char* const EXP = "EXP";

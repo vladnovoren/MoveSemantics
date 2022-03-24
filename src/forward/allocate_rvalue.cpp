@@ -9,5 +9,7 @@ int main() {
   LogInt* p1 = Allocate<LogInt>(LogInt(42));
   delete p1;
 
+  my_forward<LogInt>(LogInt(42));
+
   return 0;
 }

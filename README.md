@@ -46,7 +46,7 @@ int main() {
 
 You can see results:
 <pre>
-<img src="move_overload.png" alt="Picture 3" width="800">
+<img src="img/move_overload.png" alt="Picture 3" width="800">
 </pre>
 
 There's a way to avoid overloading. Let's forward `happiness` by value and move it to `Cat::happiness_`:
@@ -89,11 +89,11 @@ There're two cases:
 
 You can see results:
 <pre>
-<img src="move_universal.png" alt="Picture 3" width="800">
+<img src="img/move_universal.png" alt="Picture 3" width="800">
 </pre>
 Here you can see our need to forcibly make `rvalue` object from `lvalue` in some cases. С++ standart library offers us `std::move` for it. It's convenient `static_cast` wrapper automatically deduce type and cast everything to `rvalue`. Let's see my own realisation of it:
 
-```
+```c++
 template<typename T>
 typename my_remove_reference<T>::type&& my_move(T&& obj) {
   return static_cast<typename my_remove_reference<T>::type&&>(obj);
@@ -147,7 +147,7 @@ int main() {
 ```
 You can see that everything has moved:
 <pre>
-<img src="move_check.png" alt="Move check" width="800">
+<img src="img/move_check.png" alt="Move check" width="800">
 </pre>
 
 It's time to rewrite our setter:
@@ -199,6 +199,7 @@ In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rv
 |Value|Move|Forward|
 |-------------------------------|-----------------------------|-----------------------------------|
 |![Value](img/forward_value.png)|![Move](img/forward_move.png)|![Forward](img/forward_forward.png)|
+
 Realisation with `std::forward` copied object when we passed it as `lvalue`. Let's pass `rvalue`:
 ```c++
 #include "forward/allocate_forward.hpp"
@@ -216,11 +217,15 @@ int main() {
 }
 ```
 Let's see results:
+
 |Passing rvalue using forward inside|
 |-----------------------------------|
-|![Value](img/forward_rvalue.png)   |
+|![Value](img/forward_rvalue.png)|
 
-Here you can see that `a` passed as `lvalue`-reference and copy constructor has been called, but temporary object passed as `rvalue`-reference, so move constructor has been called.
+`std::forward` can be implemented like this:
+```
+
+```
 
 ## Conclusion
 As you can see, `std::forward` is powerfull wrapper over `static_cast` that gives us prefect forwarding. The question is: why we should still use `std::move`? Firstly, sometimes we want to explicitly turn an `lvalue`-object to `rvalue` and "get rid of it". Secondly, `std::forward` requires type specifying which overfills the code.
