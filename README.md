@@ -91,7 +91,7 @@ You can see results:
 <pre>
 <img src="img/move_universal.png" alt="Picture 3" width="800">
 </pre>
-Here you can see our need to forcibly make `rvalue` object from `lvalue` in some cases. С++ standart library offers us `std::move` for it. It's convenient `static_cast` wrapper automatically deduce type and cast everything to `rvalue`. Let's see my own realisation of it:
+Here you can see our need to forcibly make `rvalue` object from `lvalue` in some cases. С++ standard library offers us `std::move` for it. It's convenient `static_cast` wrapper automatically deduce type and cast everything to `rvalue`. Let's see my own realisation of it:
 
 ```c++
 template<typename T>
@@ -100,8 +100,9 @@ typename my_remove_reference<T>::type&& my_move(T&& obj) {
 }
 ```
 There're two cases:
-* If argement type is `T&&`, it deduces `T`.
-* If argument type is `T` or `T&`, it deduces `T&`. Refference collapcing rule transforms all `T&&` occurences into `T&`. `my_remove_refference` deal with it, offering us clear type `T` without any refferences.
+* `lavlue` were passed. `T` deduces to `ArgT&`.
+* `rvalue` were passed. `T` deduces to `ArgT`.
+It doesn't matter what we passed, because `typename my_remove_reference<T>::type&&` will have type `ArgT&&` in both cases, so we get `rvalue` at out everytime.
 
 `my_remove_refference` is realised as template structure with no fields and partial template specialization:
 ```c++
