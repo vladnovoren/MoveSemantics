@@ -102,6 +102,7 @@ typename my_remove_reference<T>::type&& my_move(T&& obj) {
 There're two cases:
 * `lavlue` were passed. `T` deduces to `ArgT&`.
 * `rvalue` were passed. `T` deduces to `ArgT`.
+
 It doesn't matter what we passed, because `typename my_remove_reference<T>::type&&` will have type `ArgT&&` in both cases, so we get `rvalue` at out everytime.
 
 `my_remove_refference` is realised as template structure with no fields and partial template specialization:
