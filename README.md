@@ -223,12 +223,33 @@ Let's see results:
 |![Value](img/forward_rvalue.png)|
 
 `std::forward` can be implemented like this:
-```
+```c++
+// calls when we forward lvalue
+template<typename T>
+T&& my_forward(typename my_remove_reference<T>::type& obj) {
+  return static_cast<T&&>(obj);
+}
 
+// calls when we forward rvalue
+template<typename T>
+T&& my_forward(typename my_remove_reference<T>::type&& obj) {
+  return static_cast<T&&>(obj);
+}
 ```
+`std::forward` can't deduce type by itself. You should explicity point it in call.
 
-## Conclusion
-As you can see, `std::forward` is powerfull wrapper over `static_cast` that gives us prefect forwarding. The question is: why we should still use `std::move`? Firstly, sometimes we want to explicitly turn an `lvalue`-object to `rvalue` and "get rid of it". Secondly, `std::forward` requires type specifying which overfills the code.
+1. First overload calls when we forward `lvalue`.
+    1. Forwarded object had `ArgT` or `ArgT&&` type. `T&&` will be deduced as `ArgT& &&` -> reference collapsing -> `ArgT&` -> at the out we get `lvalue`.
+    2. Forwarded object had `ArgT&` type. `T&&` will be deduced as `ArgT& &` -> reference collapsing -> `ArgT&` -> at the out we get `lvalue`.
+2. Second overload calls when we forward `rvalue`. `T&&` will be deduced as `ArgT&& &&` -> reference collapsing -> `ArgT&&` -> at the out we get `rvalue`.
+
+## Comparing
+Let's group result of using `std::move` and `std::forward` in table:
+<pre>
+<table>
+<tr><td>input expression category</td><td>expression type</td><td>std::move(expr) category</td><td>std::forward<ArgT>(expr) type</td></tr>
+</table>
+</pre>
 
 ## Links
 - [lvalues and rvalues](https://habr.com/ru/post/322132/)
