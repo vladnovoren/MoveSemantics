@@ -247,7 +247,7 @@ T&& my_forward(typename my_remove_reference<T>::type&& obj) {
 Let's group result of using `std::move` and `std::forward` in table:
 <pre>
 <table>
-<tr><td>input expression category</td><td>expression type</td><td>std::move(expr) category</td><td>std::forward<ArgT>(expr) type</td></tr>
+<tr><td>input expression category</td><td>expression type</td><td>std::move(expr) category</td><td>std::forward\<ArgT\>(expr) type</td></tr>
 </table>
 </pre>
 
