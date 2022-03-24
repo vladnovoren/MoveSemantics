@@ -273,17 +273,3 @@ Let's group result of using `std::move` and `std::forward` in table:
 - [cppreference: std::move](https://en.cppreference.com/w/cpp/utility/move)
 
 - [cppreference: std::forward](https://en.cppreference.com/w/cpp/utility/forward)
-
-init copy
-```
-int main() {
-  LogIniter::GetInstance(LogType::GV);
-  FUNC_LOG;
-
-  LOG_INT_DECL(a);
-  LOG_INT_INIT_BY_COPY(b, a);
-
-  return 0;
-}
-```
-init move
