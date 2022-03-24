@@ -259,6 +259,7 @@ Let's group result of using `std::move` and `std::forward` in table:
 `std::move`:
 1. Makes everything `rvalue`.
 2. Uses when object is close to die. Helps to tell compiler to treat object as temporary to avoid unnecessary copying, e.g. in setters.
+
 `std::forward`:
 1. Saves the category of the expression.
 2. Uses to forward objects through wrappers, e.g. `emplace_back`.
