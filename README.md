@@ -91,7 +91,7 @@ You can see results:
 <pre>
 <img src="img/move_universal.png" alt="Picture 3" width="800">
 </pre>
-Here you can see our need to forcibly make `rvalue` object from `lvalue` in some cases. С++ standard library offers us `std::move` for it. It's convenient `static_cast` wrapper automatically deduce type and cast everything to `rvalue`. Let's see my own realisation of it:
+Here you can see our need to forcibly make `rvalue` object from `lvalue` in some cases. С++ standard library offers us `std::move` for it. It's convenient `static_cast` wrapper automatically deduce type and cast everything to `rvalue`. Let's see my own implementation of it:
 
 ```c++
 template<typename T>
@@ -100,7 +100,7 @@ typename my_remove_reference<T>::type&& my_move(T&& obj) {
 }
 ```
 There're two cases:
-* `lavlue` were passed. `T` deduces to `ArgT&`.
+* `lvalue` were passed. `T` deduces to `ArgT&`.
 * `rvalue` were passed. `T` deduces to `ArgT`.
 
 It doesn't matter what we passed, because `typename my_remove_reference<T>::type&&` will have type `ArgT&&` in both cases, so we get `rvalue` at out everytime.
@@ -202,7 +202,7 @@ In case 3 we use `std::forward` to pass `lvalue` as `lvalue` and `rvalue` as `rv
 |-------------------------------|-----------------------------|-----------------------------------|
 |![Value](img/forward_value.png)|![Move](img/forward_move.png)|![Forward](img/forward_forward.png)|
 
-Realisation with `std::forward` copied object when we passed it as `lvalue`. Let's pass `rvalue`:
+Implementation with `std::forward` copied object when we passed it as `lvalue`. Let's pass `rvalue`:
 ```c++
 #include "forward/allocate_forward.hpp"
 #include "log_initer.hpp"
@@ -238,24 +238,9 @@ T&& my_forward(typename my_remove_reference<T>::type&& obj) {
   return static_cast<T&&>(obj);
 }
 ```
-`std::forward` can't deduce type by itself. You should explicity point it in call.
 
-1. First overload calls when we forward `lvalue`.
-    1. Forwarded object had `ArgT` or `ArgT&&` type. `T&&` will be deduced as `ArgT& &&` -> reference collapsing -> `ArgT&` -> at the out we get `lvalue`.
-    2. Forwarded object had `ArgT&` type. `T&&` will be deduced as `ArgT& &` -> reference collapsing -> `ArgT&` -> at the out we get `lvalue`.
-2. Second overload calls when we forward `rvalue`. `T&&` will be deduced as `ArgT&& &&` -> reference collapsing -> `ArgT&&` -> at the out we get `rvalue`.
-
-## Comparing
-Let's group result of using `std::move` and `std::forward` in table:
-<pre>
-<table border = "1">
-<tr><td>input expr category</td><td>expr type</td><td>std::forward&ltArgT&gt(expr) category</td><td>std::forward&ltArgT&gt(expr) type</td><td>std::move(expr) category</td><td>std::move(expr) type</td></tr>
-<tr><td rowspan = "3">lvalue</td><td>ArgT</td><td rowspan = "3">lvalue</td><td rowspan="3">ArgT&</td><td rowspan = "4">rvalue</td><td rowspan = "4">ArgT&&</td></tr>
-<tr><td>ArgT&</td></tr>
-<tr><td>ArgT&&</td></tr>
-<tr><td>rvalue</td><td>ArgT&&</td><td>rvalue</td><td>ArgT&&</td></tr>
-</table>
-</pre>
+* If we forward `lvalue` to `Allocate`, universal link `ArgT&&` extracts as `ArgT&`, then first overload of `my_forward` is called and our argument passed as `lvalue` into constructor.
+* If we forward `rvalue` to `Allocate`, universal link `ArgT&&` extracts as `ArgT&&`, then second overload of `my_forward` is called and our argmunent passed as `rvalue` into constructor.
 
 ## Conclusion
 `std::move`:
